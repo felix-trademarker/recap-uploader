@@ -1,0 +1,283 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <section id="uploader-content">
+
+        <form action="/audio-recap/add-audio-submit" method="post" >
+        <div class="row mt-4 mb-4">
+          <div class="col-md-12">
+            <h1>Recap Audio Uploader</h1>
+          </div>
+          <div class="col-md-4 mt-3">
+            <span @click="addAudioBtn" class="btn btn-lg btn-primary">Add Audio File</span>
+            <input class="d-none" type="file" @change="audioFile" id="fileupload" name="fileupload" >
+
+            <p v-if="fileObj"></p>
+            <table v-if="fileObj" class="table">
+              <tr>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Type</th>
+              </tr>
+              <tr>
+                <td>{{ fileObj.name }}</td>
+                <td>{{ fileObj.size }}</td>
+                <td>{{ fileObj.type }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-4 mt-3" v-if="file">
+            <input class="form-control ccInput" type="text" placeholder="Lesson No." name="lessonNumber" >
+          </div>
+
+          <div class="col-md-4 mt-3 text-right" v-if="file">
+            <!-- <span class="btn btn-lg btn-danger" @click="playSnippetAudio()"><i class="fas fa-play "></i></span> -->
+            <audio controls>
+              <source :src="'/recap-audio/uploads/'+file" type="audio/wav">
+            Your browser does not support the audio element.
+            </audio>
+          </div>
+
+          <div v-if="file" class="col-md-12 mt-5">
+
+            <div class="row form-row" v-for="(audioSnippet, ndx) in audioSnippets">
+
+              <div class="col-md-3">
+                <input class="form-control ccInput" type="number" placeholder="start time in sec." :name="'audioSnippets['+ndx+'][start]'" v-model="audioSnippets[ndx].start">
+                <input class="form-control ccInput" type="number" placeholder="end time in sec." :name="'audioSnippets['+ndx+'][end]'" v-model="audioSnippets[ndx].end">
+              </div>
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input class="form-control ccInput" type="text" placeholder="PINYIN" :name="'audioSnippets['+ndx+'][p]'" v-model="audioSnippets[ndx].p">
+                    <input class="form-control ccInput" type="text" placeholder="Simplified" :name="'audioSnippets['+ndx+'][s]'" v-model="audioSnippets[ndx].s">
+                    
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control ccInput" type="text" placeholder="English" :name="'audioSnippets['+ndx+'][e]'" v-model="audioSnippets[ndx].e">
+                    <input class="form-control ccInput" type="text" placeholder="Traditional" :name="'audioSnippets['+ndx+'][t]'" v-model="audioSnippets[ndx].t">
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2 text-right">
+                <span v-if="audioSnippets[ndx].start && audioSnippets[ndx].end" class="btn btn-sm btn-info" @click="playSnippetAudioSnippet(audioSnippets[ndx].start,audioSnippets[ndx].end)"><i class="fas fa-play"></i></span>
+                <span class="btn btn-sm btn-danger" @click="removeSnippet(ndx)"><i class="fas fa-trash"></i></span>
+              </div>
+
+              <hr>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <span class="btn btn-success" @click="addSnippet">+ Add Audio Snippet</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <input type="submit" class="btn btn-danger-outline" value="Submit" >
+            </div>
+          </div>
+
+          
+        </div>
+      </form>
+
+
+
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script src="/recap-audio/js/vue-2.js"></script>
+<script>
+  var audio;
+  var interval;
+  var vueApp = new Vue({
+    el: "#uploader-content",
+    data: {
+      file: '',
+      fileObj: '',
+      audioSnippets: []
+    },
+    methods: {
+
+      postAPIFetch: async function(api, params) {
+
+        let options = {
+            method: "POST",
+            body: JSON.stringify(params)
+        }
+
+        let okOption = false
+
+        let results = await fetch(api,options)
+            .then(res => {
+                return res.statusText;
+            })
+
+
+      },
+
+      audioFile: async function() {
+        var xmlhttp = new XMLHttpRequest();
+        let fileElement = document.getElementById("fileupload")
+        let file = fileElement.files[0];
+        
+        console.log()
+        if (file.type != "audio/wav") {
+          alert("Please select wav file");
+          return;
+        }
+
+        this.fileObj = file;
+        console.log(this.fileObj);
+
+        uploadFile(file,0)
+      },
+
+      playSnippetAudioSnippet: function(start,end) {
+        
+        // var timerFlag = true;
+        // var interval = setInterval(function(){
+        //     console.log('timer'+audio.currentTime);
+        //     if(audio.currentTime >= end){
+        //       audio.currentTime = start
+        //       audio.pause();
+        //     }
+        // }, 1000); 
+
+        if (!audio) {
+          audio = new Audio('/recap-audio/uploads/'+this.file);
+          
+        }
+
+        console.log(start,end);
+        // audio.play()
+        if (!audio.paused) {
+          if(audio.currentTime < start || audio.currentTime >= end){
+            audio.currentTime = start
+            audio.play()
+          } else {
+            audio.pause()
+          }
+          
+        } else {
+          audio.currentTime = start
+          audio.play()
+        }
+
+        this.playInterval(start,end)
+
+        // setInterval(function(){
+        //   console.log('timer'+audio.currentTime);
+        //   if(audio.currentTime >= end){
+        //     audio.currentTime = start
+        //     audio.pause();
+        //   }
+        // },1000);
+
+
+        
+
+
+      },
+
+      playInterval: function (start, end) {
+
+        clearInterval(interval);
+
+        interval = setInterval(function(){
+            console.log('timer'+audio.currentTime);
+            if(audio.currentTime >= end){
+              audio.currentTime = start
+              audio.pause();
+            }
+        }, 1000); 
+
+      },
+
+      playSnippetAudio: function() {
+
+        if (!audio) {
+          audio = new Audio('/recap-audio/uploads/'+this.file);
+        } 
+        
+        // audio.play();
+        audio.currentTime = 0
+        audio.play()
+
+      },
+
+      addSnippet: function() {
+        let data = {
+          e: '',
+          s: '',
+          t: '',
+          p: '',
+          start: '',
+          end: ''
+        }
+
+        this.audioSnippets.push(data)
+      },
+
+      removeSnippet: function(index) {
+
+        this.audioSnippets.splice(index,1)
+      },
+
+      addAudioBtn: function() {
+        document.getElementById("fileupload").click()
+      }
+
+    }, 
+    computed: {
+
+    }
+
+  })
+
+
+
+function uploadFile(file, i) {
+  var url = '/audio-recap/api/v1/upload'
+  var xhr = new XMLHttpRequest()
+  var formData = new FormData()
+  xhr.open('POST', url, true)
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+
+  // Update progress (can be used to show progress indicator)
+  xhr.upload.addEventListener("progress", function(e) {
+    console.log("upload progress...", (e.loaded * 100.0 / e.total));
+    // add animation uploader
+  })
+
+  xhr.addEventListener('readystatechange', function(e) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      console.log("progress... complete");
+
+      var res = JSON.parse(xhr.response)
+
+      if (res.results.status) {
+        vueApp.file = res.results.filename
+        // console.log(vueApp.file);
+      } else {
+        alert(res.results.message)
+      }
+    }
+    else if (xhr.readyState == 4 && xhr.status != 200) {
+    // Error. Inform the user
+    }
+  })
+  formData.append('file', file)
+  xhr.send(formData)
+}
+
+  </script>

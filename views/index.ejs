@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <section id="uploader-content">
+
+        <div class="row mt-4 mb-4">
+          <div class="col-md-12">
+            <h1>Recap Audio Uploader <a class="btn btn-outline-success" href="/audio-recap/add-audio">+ Add Audio</a></h1>
+          </div>
+          <div class="col-md-12 mt-3">
+            <% if( lessons ) { %>
+            <table class="table">
+              <tr>
+                <th>Lesson ID</th>
+                <th>Title</th>
+                <th>Recap</th>
+                <th>Action</th>
+              </tr>
+              <% for(let i=0; i < lessons.length; i++ ) { %>
+              <tr>
+                <td><%= lessons[i].v3_id %></td>
+                <td><%= lessons[i].title %></td>
+                <td><%= lessons[i].recap ? "Added recap" : "no recap yet" %></td>
+                <td>
+                  <% if (lessons[i].recap) { %>
+                    <a href="/audio-recap/edit/<%= lessons[i]._id %>">Edit</a>
+                  <% } else { %>
+                    <i>No available actions</i>
+                  <% } %>
+                </td>
+              </tr>
+              <% } %>
+
+            </table>
+            <% } %>
+          </div>
+        </div>
+
+
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script src="/recap-audio/js/vue-2.js"></script>
+<script>
+  var audio;
+  var interval;
+  var vueApp = new Vue({
+    el: "#uploader-content",
+    data: {
+      file: '',
+      fileObj: '',
+      audioSnippets: []
+    },
+    methods: {
+
+      postAPIFetch: async function(api, params) {
+
+        let options = {
+            method: "POST",
+            body: JSON.stringify(params)
+        }
+
+        let okOption = false
+
+        let results = await fetch(api,options)
+            .then(res => {
+                return res.statusText;
+            })
+
+
+      },
+
+
+
+
+    }, 
+    computed: {
+
+    }
+
+  })
+
+
+
+</script>
