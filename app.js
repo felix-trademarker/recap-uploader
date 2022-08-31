@@ -55,7 +55,7 @@ conn.connectToServer( function( err, client ) { // MAIN MONGO START
   // ROUTES
   var publicRouter = require('./routes/public')
 
-  app.use('/recap-uploader/',publicRouter);
+  app.use('/recap-uploader/', verify,publicRouter);
 
 
   console.log("*** DATETIME:", app.locals.moment().format("YYYY MM DD, HH:mm:ss"));
