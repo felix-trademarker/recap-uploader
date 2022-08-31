@@ -8,9 +8,9 @@ var flash = require('express-flash-2');
 const session = require('express-session');
 var lessMiddleware = require('less-middleware');
 var cookieParser = require('cookie-parser');
-
-
 var fileupload = require("express-fileupload");
+
+const {verify} = require('./middleware');
 
 
 var app = express();
@@ -55,7 +55,7 @@ conn.connectToServer( function( err, client ) { // MAIN MONGO START
   // ROUTES
   var publicRouter = require('./routes/public')
 
-  app.use('/', publicRouter);
+  app.use('/recap-uploader/', verify,publicRouter);
 
 
   console.log("*** DATETIME:", app.locals.moment().format("YYYY MM DD, HH:mm:ss"));

@@ -2,6 +2,23 @@ var Model = require('./../models/_model')
 
 var rpoContents = new Model("contents")
 
+exports.login = async function(req, res, next) {
+
+    let lessons = await rpoContents.get()
+
+    // console.log(lessons);
+    res.render('login', {
+        layout: 'layout/public-layout', 
+        title: '',
+        description: '',
+        keywords: '',
+        lessons: lessons
+
+    });
+    
+  
+}
+
 exports.index = async function(req, res, next) {
 
     let lessons = await rpoContents.get()
