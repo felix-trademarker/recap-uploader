@@ -16,6 +16,10 @@ router.get([
 ],publicController.index);
 
 router.get([
+    '/login',
+],publicController.login);
+
+router.get([
     '/audio-recap/add-audio'
 ],publicController.addAudio);
 

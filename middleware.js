@@ -8,9 +8,11 @@ exports.verify = function(req, res, next){
     const { userId } = req.session
 
     console.log("userId",userId)
-    console.log("accessToken",req.cookies)
+    console.log("accessToken",req.cookies['cpod.sid'])
 
-    // let results = axios.get()
+    if (!req.cookies['cpod.sid']) {
+        res.redirect('/login')
+    }
 
     next()
 }
