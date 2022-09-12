@@ -68,7 +68,7 @@
 
 				let results = await fetch(api,options)
 				.then(resp => {
-					console.log("resp", resp);
+					// console.log("resp", resp);
 					if (resp.status != 200) {
 					return 'Invalid Credentials'
 					} else {
@@ -76,7 +76,7 @@
 					}
 				})
 				.then(res => {
-					console.log("this res", res);
+					console.log("return this res", res);
 					return res;
 				})
 
@@ -102,6 +102,7 @@
 
 				let responseLogin = await this.postAPIFetch('https://www.chinesepod.com/api/v1/entrance/login', params)
 				console.log("login res", responseLogin);
+				
 				if (responseLogin && responseLogin.token) {
 					let vuexData = responseLogin
 					vuexData.userInfo = {
