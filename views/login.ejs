@@ -67,9 +67,10 @@
 				let okOption = false
 
 				let results = await fetch(api,options)
+					.then(resp => resp.json())
 					.then(res => {
 						console.log(res)
-						return res.statusText;
+						return res;
 					})
 
 			},
@@ -93,7 +94,7 @@
 				let params = {emailAddress: this.customerEmail, password: this.customerPassword, clientId: "dashboard", rememberMe: true}
 
 				let responseLogin = await this.postAPIFetch('https://www.chinesepod.com/api/v1/entrance/login', params)
-
+				console.log("login res", responseLogin);
 				if (responseLogin && responseLogin.token) {
 					let vuexData = responseLogin
 					vuexData.userInfo = {
