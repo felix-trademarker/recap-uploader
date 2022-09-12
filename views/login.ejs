@@ -67,12 +67,18 @@
 				let okOption = false
 
 				let results = await fetch(api,options)
-					// .then(resp => resp.json())
-					.then(res => {
-						console.log(res)
-						console.log(res.Response)
-						return res.json();
-					})
+				.then(resp => {
+					console.log("resp", resp);
+					if (resp.status != 200) {
+					return 'Invalid Credentials'
+					} else {
+					return resp.json()
+					}
+				})
+				.then(res => {
+					console.log("this res", res);
+					return res;
+				})
 
 			},
 
