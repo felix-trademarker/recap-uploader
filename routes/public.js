@@ -43,6 +43,10 @@ router.post([
     '/audio-recap/api/v1/upload'
 ],apiController.uploadAudio);
 
+router.post([
+    '/audio-recap/api/v1/upload-zip'
+],apiController.uploadZip);
+
 router.get([
     '/audio-recap/api/v1/get/:id'
 ],apiController.getLesson);

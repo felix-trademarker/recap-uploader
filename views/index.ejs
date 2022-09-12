@@ -1,13 +1,14 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
+
       <section id="uploader-content">
 
         <div class="row mt-4 mb-4">
           <div class="col-md-12">
-            <h1>Recap Audio Uploader <a class="btn btn-outline-success" href="/audio-recap/add-audio">+ Add Audio</a></h1>
+            <h1>Recap Audio Uploader <a class="btn btn-outline-success" href="/recap-uploader/audio-recap/add-audio">+ Add Audio</a></h1>
           </div>
-          <div class="col-md-12 mt-3">
+          <!-- <div class="col-md-12 mt-3">
             <% if( lessons ) { %>
             <table class="table">
               <tr>
@@ -33,7 +34,7 @@
 
             </table>
             <% } %>
-          </div>
+          </div> -->
         </div>
 
 
@@ -43,6 +44,7 @@
   </div>
 </div>
 
+<script src="/recap-audio/js/isLogin.js"></script>
 <script src="/recap-audio/js/vue-2.js"></script>
 <script>
   var audio;
@@ -52,7 +54,8 @@
     data: {
       file: '',
       fileObj: '',
-      audioSnippets: []
+      audioSnippets: [],
+      vuex: JSON.parse(window.localStorage.getItem('vuex'))
     },
     methods: {
 

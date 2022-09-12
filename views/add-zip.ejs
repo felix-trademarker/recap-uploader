@@ -9,9 +9,7 @@
             <h1>Recap Audio Uploader</h1>
           </div>
           <div class="col-md-4 mt-3">
-            <span @click="addZipBtn" class="btn btn-lg btn-primary">Add Zip File</span>
             <span @click="addAudioBtn" class="btn btn-lg btn-primary">Add Audio File</span>
-            <input class="d-none" type="file" @change="zipFile" id="zipUpload" name="zipUpload" >
             <input class="d-none" type="file" @change="audioFile" id="fileupload" name="fileupload" >
 
             <p v-if="fileObj"></p>
@@ -127,23 +125,6 @@
 
       },
 
-      zipFile: async function() {
-        var xmlhttp = new XMLHttpRequest();
-        let fileElement = document.getElementById("zipUpload")
-        let file = fileElement.files[0];
-        
-        console.log(file.type)
-        if (file.type != "application/zip") {
-          alert("Please select zip file");
-          return;
-        }
-
-        this.fileObj = file;
-        console.log(this.fileObj);
-
-        uploadZip(file,0)
-      },
-
       audioFile: async function() {
         var xmlhttp = new XMLHttpRequest();
         let fileElement = document.getElementById("fileupload")
@@ -225,7 +206,7 @@
       playSnippetAudio: function() {
 
         if (!audio) {
-          audio = new Audio('/recap-uploader/uploads/'+this.file);
+          audio = new Audio('/recap-audio/uploads/'+this.file);
         } 
         
         // audio.play();
@@ -254,10 +235,6 @@
 
       addAudioBtn: function() {
         document.getElementById("fileupload").click()
-      },
-
-      addZipBtn: function() {
-        document.getElementById("zipUpload").click()
       }
 
     }, 
@@ -270,41 +247,7 @@
 
 
 function uploadFile(file, i) {
-  var url = '/recap-uploader/audio-recap/api/v1/upload'
-  var xhr = new XMLHttpRequest()
-  var formData = new FormData()
-  xhr.open('POST', url, true)
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-
-  // Update progress (can be used to show progress indicator)
-  xhr.upload.addEventListener("progress", function(e) {
-    console.log("upload progress...", (e.loaded * 100.0 / e.total));
-    // add animation uploader
-  })
-
-  xhr.addEventListener('readystatechange', function(e) {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      console.log("progress... complete");
-
-      var res = JSON.parse(xhr.response)
-
-      if (res.results.status) {
-        vueApp.file = res.results.filename
-        // console.log(vueApp.file);
-      } else {
-        alert(res.results.message)
-      }
-    }
-    else if (xhr.readyState == 4 && xhr.status != 200) {
-    // Error. Inform the user
-    }
-  })
-  formData.append('file', file)
-  xhr.send(formData)
-}
-
-function uploadZip(file, i) {
-  var url = '/recap-uploader/audio-recap/api/v1/upload-zip'
+  var url = '/audio-recap/api/v1/upload'
   var xhr = new XMLHttpRequest()
   var formData = new FormData()
   xhr.open('POST', url, true)
