@@ -67,11 +67,11 @@
 				let okOption = false
 
 				let results = await fetch(api,options)
-					.then(resp => resp.json())
-					// .then(res => {
-					// 	console.log(res)
-					// 	res.json();
-					// })
+					// .then(resp => resp.json())
+					.then(res => {
+						console.log(res)
+						return res.json();
+					})
 
 			},
 
