@@ -36,7 +36,7 @@
           <div class="col-md-4 mt-3 text-right" v-if="file">
             <!-- <span class="btn btn-lg btn-danger" @click="playSnippetAudio()"><i class="fas fa-play "></i></span> -->
             <audio controls>
-              <source :src="'/recap-audio/uploads/'+file" type="audio/wav">
+              <source :src="'/recap-uploader/uploads/'+file" type="audio/wav">
             Your browser does not support the audio element.
             </audio>
           </div>
@@ -97,7 +97,7 @@
   </div>
 </div>
 
-<script src="/recap-audio/js/vue-2.js"></script>
+<script src="/recap-uploader/js/vue-2.js"></script>
 <script>
   var audio;
   var interval;
@@ -173,7 +173,7 @@
         // }, 1000); 
 
         if (!audio) {
-          audio = new Audio('/recap-audio/uploads/'+this.file);
+          audio = new Audio('/recap-uploader/uploads/'+this.file);
           
         }
 
