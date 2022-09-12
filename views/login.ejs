@@ -68,6 +68,7 @@
 
 				let results = await fetch(api,options)
 					.then(res => {
+						console.log(res)
 						return res.statusText;
 					})
 
