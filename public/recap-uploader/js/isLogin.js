@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.replace("/recap-uploader/login");
         isLogin = false
     } else {
-        if (!(vuex.userInfo && vuex.userInfo.email && vuex.userInfo.email.endsWith('@chinesepod.com'))) {
+        if (!(vuex.userInfo && vuex.userInfo.email && (vuex.userInfo.email.endsWith('@chinesepod.com') || vuex.userInfo.email.endsWith('@bigfoot.com')))) {
             window.location.replace("/home");
             isLogin = false
         }
