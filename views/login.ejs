@@ -69,7 +69,8 @@
 				let results = await fetch(api,options)
 					// .then(resp => resp.json())
 					.then(res => {
-						console.log(res.response)
+						console.log(res)
+						console.log(res.Response)
 						return res.json();
 					})
 
