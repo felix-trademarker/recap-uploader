@@ -2,13 +2,14 @@
   <div class="row">
     <div class="col-12">
       <section id="uploader-content">
+        <div class="col-md-12">
+          <h1>Recap Audio Uploader</h1>
+        </div>
 
-        <form action="/audio-recap/add-audio-submit" method="post" >
+        <form action="/recap-uploader/add-audio-submit" method="post" >
         <div class="row mt-4 mb-4">
-          <div class="col-md-12">
-            <h1>Recap Audio Uploader</h1>
-          </div>
-          <div class="col-md-4 mt-3">
+          
+          <div v-if="!addType" class="col-md-4 mt-3">
             <span @click="addZipBtn" class="btn btn-lg btn-primary">Add Zip File</span>
             <span @click="addAudioBtn" class="btn btn-lg btn-primary">Add Audio File</span>
             <input class="d-none" type="file" @change="zipFile" id="zipUpload" name="zipUpload" >
@@ -29,63 +30,72 @@
             </table>
           </div>
 
-          <div class="col-md-4 mt-3" v-if="file">
-            <input class="form-control ccInput" type="text" placeholder="Lesson No." name="lessonNumber" >
-          </div>
+          <!-- add audio type -->
+          <div v-if="addType == 'audio'">
+            <div class="col-md-4 mt-3" v-if="file">
+              <input class="form-control ccInput" type="text" placeholder="Lesson No." name="lessonNumber" >
+            </div>
 
-          <div class="col-md-4 mt-3 text-right" v-if="file">
-            <!-- <span class="btn btn-lg btn-danger" @click="playSnippetAudio()"><i class="fas fa-play "></i></span> -->
-            <audio controls>
-              <source :src="'/recap-uploader/uploads/'+file" type="audio/wav">
-            Your browser does not support the audio element.
-            </audio>
-          </div>
+            <div class="col-md-4 mt-3 text-right" v-if="file">
+              <!-- <span class="btn btn-lg btn-danger" @click="playSnippetAudio()"><i class="fas fa-play "></i></span> -->
+              <audio controls>
+                <source :src="'/recap-uploader/uploads/'+file" type="audio/wav">
+              Your browser does not support the audio element.
+              </audio>
+              <input class="d-none" type="text" id="fileName" name="fileName" v-model="file" >
 
-          <div v-if="file" class="col-md-12 mt-5">
+            </div>
 
-            <div class="row form-row" v-for="(audioSnippet, ndx) in audioSnippets">
+            <div v-if="file" class="col-md-12 mt-5">
 
-              <div class="col-md-3">
-                <input class="form-control ccInput" type="number" placeholder="start time in sec." :name="'audioSnippets['+ndx+'][start]'" v-model="audioSnippets[ndx].start">
-                <input class="form-control ccInput" type="number" placeholder="end time in sec." :name="'audioSnippets['+ndx+'][end]'" v-model="audioSnippets[ndx].end">
-              </div>
-              <div class="col-md-7">
-                <div class="row">
-                  <div class="col-md-6">
-                    <input class="form-control ccInput" type="text" placeholder="PINYIN" :name="'audioSnippets['+ndx+'][p]'" v-model="audioSnippets[ndx].p">
-                    <input class="form-control ccInput" type="text" placeholder="Simplified" :name="'audioSnippets['+ndx+'][s]'" v-model="audioSnippets[ndx].s">
-                    
-                  </div>
-                  <div class="col-md-6">
-                    <input class="form-control ccInput" type="text" placeholder="English" :name="'audioSnippets['+ndx+'][e]'" v-model="audioSnippets[ndx].e">
-                    <input class="form-control ccInput" type="text" placeholder="Traditional" :name="'audioSnippets['+ndx+'][t]'" v-model="audioSnippets[ndx].t">
+              <div class="row form-row" v-for="(audioSnippet, ndx) in audioSnippets">
 
+                <div class="col-md-3">
+                  <input class="form-control ccInput" type="number" placeholder="start time in sec." :name="'audioSnippets['+ndx+'][start]'" v-model="audioSnippets[ndx].start">
+                  <input class="form-control ccInput" type="number" placeholder="end time in sec." :name="'audioSnippets['+ndx+'][end]'" v-model="audioSnippets[ndx].end">
+                </div>
+                <div class="col-md-7">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <input class="form-control ccInput" type="text" placeholder="PINYIN" :name="'audioSnippets['+ndx+'][p]'" v-model="audioSnippets[ndx].p">
+                      <input class="form-control ccInput" type="text" placeholder="Simplified" :name="'audioSnippets['+ndx+'][s]'" v-model="audioSnippets[ndx].s">
+                      
+                    </div>
+                    <div class="col-md-6">
+                      <input class="form-control ccInput" type="text" placeholder="English" :name="'audioSnippets['+ndx+'][e]'" v-model="audioSnippets[ndx].e">
+                      <input class="form-control ccInput" type="text" placeholder="Traditional" :name="'audioSnippets['+ndx+'][t]'" v-model="audioSnippets[ndx].t">
+
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-md-2 text-right">
-                <span v-if="audioSnippets[ndx].start && audioSnippets[ndx].end" class="btn btn-sm btn-info" @click="playSnippetAudioSnippet(audioSnippets[ndx].start,audioSnippets[ndx].end)"><i class="fas fa-play"></i></span>
-                <span class="btn btn-sm btn-danger" @click="removeSnippet(ndx)"><i class="fas fa-trash"></i></span>
+                <div class="col-md-2 text-right">
+                  <span v-if="audioSnippets[ndx].start && audioSnippets[ndx].end" class="btn btn-sm btn-info" @click="playSnippetAudioSnippet(audioSnippets[ndx].start,audioSnippets[ndx].end)"><i class="fas fa-play"></i></span>
+                  <span class="btn btn-sm btn-danger" @click="removeSnippet(ndx)"><i class="fas fa-trash"></i></span>
+                </div>
+
+                <hr>
               </div>
 
-              <hr>
+              <div class="row">
+                <div class="col">
+                  <span class="btn btn-success" @click="addSnippet">+ Add Audio Snippet</span>
+                </div>
+              </div>
+
             </div>
 
             <div class="row">
-              <div class="col">
-                <span class="btn btn-success" @click="addSnippet">+ Add Audio Snippet</span>
+              <div class="col-md-12 text-right">
+                <input type="submit" class="btn btn-danger-outline" value="Submit" >
               </div>
             </div>
-
           </div>
+          <!-- audio type end -->
 
-          <div class="row">
-            <div class="col-md-12 text-right">
-              <input type="submit" class="btn btn-danger-outline" value="Submit" >
-            </div>
+          <!-- add zip type -->
+          <div v-if="addType == 'zip'">
+            zip
           </div>
-
-          
         </div>
       </form>
 
@@ -106,7 +116,9 @@
     data: {
       file: '',
       fileObj: '',
-      audioSnippets: []
+      audioSnippets: [],
+      addType: '',
+      uploadedJson: null
     },
     methods: {
 
@@ -141,6 +153,8 @@
         this.fileObj = file;
         console.log(this.fileObj);
 
+        this.addType = 'zip'
+
         uploadZip(file,0)
       },
 
@@ -154,6 +168,8 @@
           alert("Please select wav file");
           return;
         }
+
+        this.addType = 'audio'
 
         this.fileObj = file;
         console.log(this.fileObj);
@@ -270,7 +286,7 @@
 
 
 function uploadFile(file, i) {
-  var url = '/recap-uploader/audio-recap/api/v1/upload'
+  var url = '/recap-uploader/api/v1/upload'
   var xhr = new XMLHttpRequest()
   var formData = new FormData()
   xhr.open('POST', url, true)
@@ -287,7 +303,7 @@ function uploadFile(file, i) {
       console.log("progress... complete");
 
       var res = JSON.parse(xhr.response)
-
+      vueApp.file = res.results.filename
       if (res.results.status) {
         vueApp.file = res.results.filename
         // console.log(vueApp.file);
@@ -304,7 +320,7 @@ function uploadFile(file, i) {
 }
 
 function uploadZip(file, i) {
-  var url = '/recap-uploader/audio-recap/api/v1/upload-zip'
+  var url = '/recap-uploader/api/v1/upload-zip'
   var xhr = new XMLHttpRequest()
   var formData = new FormData()
   xhr.open('POST', url, true)
@@ -322,8 +338,10 @@ function uploadZip(file, i) {
 
       var res = JSON.parse(xhr.response)
 
+      window.location.replace("/recap-uploader");
+
       if (res.results.status) {
-        vueApp.file = res.results.filename
+        vueApp.uploadedJson = res.results
         // console.log(vueApp.file);
       } else {
         alert(res.results.message)

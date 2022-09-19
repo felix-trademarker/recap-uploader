@@ -4,7 +4,8 @@ const { toInteger } = require('lodash');
 const fs = require('fs')
 const extract = require('extract-zip')
 
-var rpoContents = new Model("contents")
+
+var rpoRecap = new Model("recaps")
 var helpers = require('../helpers')
 
 exports.uploadAudio = async function(req, res, next) {
@@ -15,7 +16,7 @@ exports.uploadAudio = async function(req, res, next) {
     // var filename = toInteger(req.app.locals.moment().format('YYMMDDHHMMSS')) + extName;
     var filename = toInteger(req.app.locals.moment().format('YYMMDDHHMMSS')) + extName;
     filename = file.name.toLowerCase()
-    uploadPath = __dirname + '/../public/recap-audio/uploads/'+filename;
+    uploadPath = __dirname + '/../public/recap-uploader/uploads/'+filename;
 
     if (fs.existsSync(uploadPath)) {
         //file exists
@@ -54,7 +55,7 @@ exports.uploadZip = async function(req, res, next) {
     // var filename = toInteger(req.app.locals.moment().format('YYMMDDHHMMSS')) + extName;
     var zipFolder = toInteger(req.app.locals.moment().format('YYMMDDHHMMSS'));
     var filename = file.name.toLowerCase()
-    let zipUrl = __dirname + '/../public/recap-audio/uploads/'+zipFolder
+    let zipUrl = __dirname + '/../public/recap-uploader/uploads/'+zipFolder
     fs.mkdirSync(zipUrl);
     uploadPath = zipUrl +'/'+filename;
 
@@ -73,7 +74,7 @@ exports.uploadZip = async function(req, res, next) {
         res.json({results:resData})
     } else {
 
-        
+        let this_ = this;
         let testret = await new Promise(async function(resolve, reject) {
             await file.mv(uploadPath, async function(err) {
                 let test = []
@@ -98,10 +99,27 @@ exports.uploadZip = async function(req, res, next) {
                     let jsonFiles = helpers.getFiles(zipFolderPath,'.json')
 
                     for (let i=0; i < jsonFiles.length; i++) {
-                        let jsonFile = require('./../public/recap-audio/uploads/'+zipFolder+'/'+filename.replace(".zip","") + "/" + jsonFiles[i])
+                        let jsonFile = require('./../public/recap-uploader/uploads/'+zipFolder+'/'+filename.replace(".zip","") + "/" + jsonFiles[i])
                         console.log("j file", jsonFile);
+                        
+                        // fetch all entries in JSON
+                        for (let j=0; j < jsonFile.length; j++) {
+                            let jFile = jsonFile[j]
+                            jFile.updatedAt = req.app.locals.moment().format()
+                            await rpoRecap.upsert({lessonNumber: jFile.lessonNumber }, jFile)
+                        }
 
                         test.push(jsonFile)
+                    }
+
+                    let wavFiles = helpers.getFiles(zipFolderPath,'.wav')
+                    let testLoc;
+                    for (let i=0; i < wavFiles.length; i++) {
+                        let imageURL = zipFolderPath + "/" + wavFiles[i]
+                        console.log("wav file", imageURL);
+                        // stop here CREATE LIST OF WAV TO UPLOAD TO S3
+                        // testLoc = await helpers.saveToS3(imageURL, wavFiles[i])
+                        console.log(testLoc);
                     }
 
                     resolve(test)
@@ -119,12 +137,13 @@ exports.uploadZip = async function(req, res, next) {
 
         console.log("test", testret);
         
+        // let testLoc = await this.saveToS3()
 
 
         let resData = {
             status: true,
             message: "uploaded successfully",
-            filename : filename
+            records : testret[0]
         }
     
         res.json({results:resData})
@@ -136,7 +155,7 @@ exports.uploadZip = async function(req, res, next) {
 
 exports.getLesson = async function(req, res, next) {
 
-    let lessons = await rpoContents.find(req.params.id)
+    let lessons = await rpoRecap.find(req.params.id)
 
     lessons = lessons && lessons.length > 0 ? lessons[0] : null
 

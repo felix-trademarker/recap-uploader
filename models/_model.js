@@ -6,9 +6,14 @@ class Model{
 
     get() {
         var this_ = this
+        // let ObjectID = require('mongodb').ObjectID;
         return new Promise(function(resolve, reject) {
             
-            this_.db.getDb().collection(this_.table).find().toArray(function(err, result) {
+            this_.db.getDb()
+                .collection(this_.table)
+                .find()
+                .sort({_id: -1})
+                .toArray(function(err, result) {
 					
 				if (err) {
 					reject(err);
@@ -92,6 +97,23 @@ class Model{
 			);
 
         });
+    }
+
+    upsert(query, data) {
+        var this_ = this
+
+        return new Promise(function(resolve, reject) { 
+
+            this_.db.getDb().collection(this_.table).updateOne(query,{$set: data },{upsert:true}, 
+                function(err, result) {
+                
+                if (err) reject(err);
+					
+                resolve(result);
+                
+			});
+
+		});
     }
 
     remove(id) {

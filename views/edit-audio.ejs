@@ -3,7 +3,7 @@
     <div class="col-12">
       <section id="uploader-content">
 
-        <form action="/audio-recap/edit-audio-submit" method="post">
+        <form action="/recap-uploader/edit-audio-submit" method="post">
             <input type="hidden" name="lessonId" value="<%= lessons._id %>">
           <div class="row mt-4 mb-4">
             <div class="col-md-12">
@@ -256,14 +256,14 @@
       },
 
       populateTables: async function() {
-        let res = await this.getAPIFetch('/audio-recap/api/v1/get/'+this.lessonId)
+        let res = await this.getAPIFetch('/recap-uploader/api/v1/get/'+this.lessonId)
 
         console.log(res);
-        this.fileupload = res.results.recap.fileObj
+        this.fileupload = res.results.fileObj
         this.fileObj = this.fileupload
-        this.file = res.results.recap.fileupload
-        this.lessonNumber = res.results.recap.lessonNumber
-        this.audioSnippets = res.results.recap.audioSnippets
+        this.file = res.results.fileName
+        this.lessonNumber = res.results.lessonNumber
+        this.audioSnippets = res.results.audioSnippets
 
 
       }

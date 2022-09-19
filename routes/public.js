@@ -11,46 +11,49 @@ var router = express.Router();
 // ====================================
 
 router.get([
-    '/',
-    '/audio-recap/'
+    '/'
 ],publicController.index);
 
 router.get([
-    '/login',
+    '/login'
 ],publicController.login);
 
 router.get([
-    '/audio-recap/add-audio'
+    '/add-audio'
 ],publicController.addAudio);
 
 router.post([
-    '/audio-recap/add-audio-submit'
+    '/add-audio-submit'
 ],publicController.addAudioSubmit);
 
 router.get([
-    '/audio-recap/edit/:id'
+    '/edit/:id'
 ],publicController.editAudio);
 
 router.post([
-    '/audio-recap/edit-audio-submit'
-],publicController.editAudioSubmit);
+    '/edit-audio-submit'
+],publicController.addAudioSubmit);
 
 
 
 // ================ API ===============
 // ====================================
 router.post([
-    '/audio-recap/api/v1/upload'
+    '/api/v1/upload'
 ],apiController.uploadAudio);
 
 router.post([
-    '/audio-recap/api/v1/upload-zip'
+    '/api/v1/upload-zip'
 ],apiController.uploadZip);
 
 router.get([
-    '/audio-recap/api/v1/get/:id'
+    '/api/v1/get/:id'
 ],apiController.getLesson);
 
+
+// ================ S3 ===============
+// ====================================
+router.get('/s3/uploads/*', publicController.fetchPublicImages);
 
 
 
