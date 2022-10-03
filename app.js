@@ -18,7 +18,7 @@ app.use(fileupload());
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(express.json());
+app.use(express.json({limit: "200mb", extended: true}))
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
