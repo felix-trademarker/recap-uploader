@@ -22,7 +22,7 @@ app.set('view engine', 'ejs');
 // app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json({limit: '100mb'}));
-app.use(express.urlencoded({limit: '100mb', extended: true }));
+app.use(express.urlencoded({limit: "100mb", extended: true, parameterLimit: 1000000}));
 
 app.use(cookieParser());
 
