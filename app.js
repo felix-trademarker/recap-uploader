@@ -32,7 +32,8 @@ app.use(lessMiddleware(path.join(__dirname, 'public')));
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json({limit: '100mb'})); 
-app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
+// app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true, parameterLimit: 1000000 })); 
 
 app.use(express.static(path.join(__dirname, 'public') ));
 
