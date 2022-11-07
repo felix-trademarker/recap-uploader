@@ -29,7 +29,7 @@ exports.index = async function(req, res, next) {
 
     
     // TEST SMS END <<<<<<
-
+    console.log("uploader page")
 
     // console.log(lessons);
     res.render('index', {
