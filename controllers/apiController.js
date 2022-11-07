@@ -61,7 +61,7 @@ exports.uploadZip = async function(req, res, next) {
 
     // get full folder
     let zipFolderPath = uploadPath.replace(".zip","")
-    // console.log(zipFolder);
+    console.log('uploading', file);
 
     if (fs.existsSync(uploadPath)) {
         //file exists
