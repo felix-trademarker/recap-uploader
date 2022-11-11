@@ -102,7 +102,7 @@
 
       <div v-if="uploadProgress" style="position: fixed;top:0;left:0;width: 100%;height: 100%; background:rgba(0,0,0,0.4)">
         <div style="width: 100%; margin-top: 120px; color: rgb(255, 255, 255);text-align: center;">
-        <h3 style="color:#fff">Please wait while uploading the file...</h3>
+        <h3 style="color:#fff">Please wait while uploading the file ({{progressPercent}})</h3>
         </div>
       </div>
 
@@ -124,7 +124,8 @@
       audioSnippets: [],
       addType: '',
       uploadedJson: null,
-      uploadProgress: false
+      uploadProgress: false,
+      progressPercent: ''
     },
     methods: {
 
@@ -337,6 +338,7 @@ function uploadZip(file, i) {
   xhr.upload.addEventListener("progress", function(e) {
     console.log("upload progress...", (e.loaded * 100.0 / e.total));
 
+    vueApp.progressPercent = (e.loaded * 100.0 / e.total).toFixed(2) + '%'
     if ((e.loaded * 100.0 / e.total) >= 100) {
       vueApp.uploadProgress = false
     } else {
