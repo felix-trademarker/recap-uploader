@@ -336,6 +336,12 @@ function uploadZip(file, i) {
   // Update progress (can be used to show progress indicator)
   xhr.upload.addEventListener("progress", function(e) {
     console.log("upload progress...", (e.loaded * 100.0 / e.total));
+
+    if ((e.loaded * 100.0 / e.total) >= 100) {
+      vueApp.uploadProgress = false
+    } else {
+      vueApp.uploadProgress = true
+    }
     // add animation uploader
   })
 
